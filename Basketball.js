@@ -9,11 +9,13 @@ import Ball from './components/Ball';
 import Hoop from './components/Hoop';
 import Net from './components/Net';
 import Floor from './components/Floor';
+import Emoji from './components/Emoji';
+import Score from './components/Score';
 
 import Vector from './utils/Vector';
 
 // physical variables
-const gravity = 0.28; // gravity
+const gravity = 0.34; // gravity
 const radius = 48; // ball radius
 const rotationFactor = 10; // ball rotation factor
 
@@ -47,7 +49,6 @@ class Basketball extends Component {
 
     // initialize ball states
     this.state = {
-      // x: Dimensions.get('window').width / 2 - radius - 60,
       x: Dimensions.get('window').width / 2 - radius,
       y: FLOOR_Y,
       vx: 0,
@@ -55,6 +56,8 @@ class Basketball extends Component {
       rotate: 0,
       scale: 1,
       lifecycle: LC_WAITING,
+      scored: null,
+      score: 0,
     };
   }
 
@@ -72,7 +75,7 @@ class Basketball extends Component {
     if (this.state.lifecycle === LC_WAITING) {
       this.setState({
         vx: angle * 0.2,
-        vy: -15,
+        vy: -16,
         lifecycle: LC_STARTING,
       });
     }
@@ -124,8 +127,8 @@ class Basketball extends Component {
     }
 
     nextState.vy = nextVelocity.y;
-
-    this.updatePosition(nextState);
+    nextState.x = this.state.x + nextState.vx;
+    nextState.y = this.state.y - nextState.vy;
   }
 
   handleCollision(nextState) {
@@ -197,11 +200,23 @@ class Basketball extends Component {
   updatePosition(nextState) {
     nextState.x = this.state.x + nextState.vx;
     nextState.y = this.state.y - nextState.vy;
+
     if (nextState.lifecycle === LC_STARTING && nextState.y < this.state.y) {
       nextState.lifecycle = LC_FALLING;
     }
     if (nextState.lifecycle === LC_RESTARTING && nextState.y < this.state.y) {
       nextState.lifecycle = LC_RESTARTING_FALLING;
+    }
+
+    if (this.state.scored === null) {
+      if (this.state.y + radius > NET_Y + NET_HEIGHT / 2 && nextState.y + radius < NET_Y + NET_HEIGHT / 2) {
+        if (nextState.x + radius > NET_LEFT_BORDER_X && nextState.x + radius < NET_RIGHT_BORDER_X) {
+          nextState.scored = true;
+          nextState.score += 1;
+        } else {
+          nextState.scored = false;
+        }
+      }
     }
   }
 
@@ -222,22 +237,41 @@ class Basketball extends Component {
 
   handleRestart(nextState) {
     if (nextState.lifecycle === LC_RESTARTING_FALLING && nextState.y <= FLOOR_Y) {
-      nextState.lifecycle = LC_WAITING;
+      // in front of the Floor
+      // will restart to 'Waiting' lifecycle step
       nextState.y = FLOOR_Y;
       nextState.vx = 0;
       nextState.vy = 0;
       nextState.rotate = 0;
       nextState.scale = 1;
+      nextState.lifecycle = LC_WAITING;
+
+      nextState.scored = null;
     }
 
+    const outOfScreen = (nextState.x > Dimensions.get('window').width + 100 || nextState.x < 0 - (radius * 2) - 100);
+
     if (
-      (nextState.x > Dimensions.get('window').width + 100 || nextState.x < 0 - (radius * 2) - 100)
+      (outOfScreen === true)
       || ((nextState.lifecycle === LC_FALLING || nextState.lifecycle === LC_BOUNCING) && (nextState.y + (radius * nextState.scale * 2) < FLOOR_Y + radius * -2))
     ) {
+      if (outOfScreen && nextState.scored === null) {
+        nextState.scored = false;
+      }
+
+      // behind the Floor
+      // will be thrown to the front of the floor
       nextState.y = FLOOR_Y;
+
+      if (nextState.scored === true) {
+        nextState.x = this.randomIntFromInterval(4, Dimensions.get('window').width - (radius * 2) - 4);
+      } else {
+        nextState.x = Dimensions.get('window').width / 2 - radius;
+        nextState.score = 0;
+      }
+
       // nextState.x = Dimensions.get('window').width / 2 - radius;
-      nextState.x = this.randomIntFromInterval(4, Dimensions.get('window').width - (radius * 2) - 4);
-      nextState.vy = -5;
+      nextState.vy = -6;
       nextState.vx = 0;
       nextState.scale = 1;
       nextState.rotate = 0;
@@ -248,7 +282,8 @@ class Basketball extends Component {
   update() {
     if (this.state.lifecycle === LC_WAITING) return;
 
-    let nextState = Object.assign({}, this.state);
+    let nextState = null;
+    nextState = Object.assign({}, this.state);
     this.updateVelocity(nextState);
     this.updatePosition(nextState);
     this.updateScale(nextState);
@@ -285,6 +320,7 @@ class Basketball extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Score y={FLOOR_HEIGHT * 3} score={this.state.score} scored={this.state.scored} />
         <Hoop y={HOOP_Y} />
         {this.renderNet(this.state.vy < 0)}
         {this.renderFloor(this.state.vy <= 0)}
@@ -298,6 +334,7 @@ class Basketball extends Component {
         />
         {this.renderNet(this.state.vy >= 0)}
         {this.renderFloor(this.state.vy > 0)}
+        <Emoji y={NET_Y} scored={this.state.scored} />
       </View>
     );
   }
