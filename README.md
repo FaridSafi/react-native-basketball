@@ -6,7 +6,7 @@ React-Native clone of the Facebook Basketball Game for iOS and Android
 
 - `git clone https://github.com/FaridSafi/react-native-basketball`
 - `cd react-native-basketball && npm install`
-- `react-native run-ios``
+- `react-native run-ios`
 
 ### TODO
 - [ ] collision

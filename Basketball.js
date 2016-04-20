@@ -11,18 +11,20 @@ import Net from './components/Net';
 import Floor from './components/Floor';
 
 // physical variables
-const g = 0.28; // gravity
-const fac = 0.6; // velocity reduction factor per bounce
+const gravity = 0.28; // gravity
+const velocityReduction = 0.6; // velocity reduction factor per bounce
 const radius = 48; // ball radius
-const rotationFactor = 10;
+const rotationFactor = 10; // ball rotation factor
 
+// components sizes and positions
 const FLOOR_HEIGHT = 48;
+const FLOOR_Y = 11;
 const HOOP_Y = Dimensions.get('window').height - 227;
 const NET_Y = Dimensions.get('window').height - 216;
 const NET_HEIGHT = 5;
 const NET_WIDTH = 83;
-const FLOOR_Y = 11;
 
+// ball lifecycle
 const LC_WAITING = 0;
 const LC_STARTING = 1;
 const LC_FALLING = 2;
@@ -42,7 +44,7 @@ class Basketball extends Component {
 
     this.interval = null;
 
-    // initialise position and velocity of ball
+    // initialize ball states
     this.state = {
       x: Dimensions.get('window').width / 2 - radius,
       y: FLOOR_Y,
@@ -59,14 +61,10 @@ class Basketball extends Component {
   }
 
   componentWillUnmount() {
-    // TODO test null this.interval
-    clearInterval(this.interval);
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
-
-  // getScale() {
-  //   let percentage = this.state.y * 100 / Dimensions.get('window').height;
-  //   return (((0.3 - 1) * percentage) / 100) + 1;
-  // }
 
   onStart(angle) {
     if (this.state.lifecycle === LC_WAITING) {
@@ -96,14 +94,14 @@ class Basketball extends Component {
   // collision
   // let bounced = this.state.bounced;
   // bouncing
-  // vy = vy * -fac;
+  // vy = vy * -velocityReduction;
   handleCollision(nextState) {
 
   }
 
   updateVelocity(nextState) {
     nextState.vx = this.state.vx;
-    nextState.vy = this.state.vy + g; // gravity
+    nextState.vy = this.state.vy + gravity;
   }
 
   updatePosition(nextState) {
@@ -118,10 +116,9 @@ class Basketball extends Component {
   }
 
   updateScale(nextState) {
-    if (nextState.lifecycle === LC_RESTARTING || nextState.lifecycle === LC_RESTARTING_FALLING) return;
+    if (nextState.lifecycle === LC_BOUNCING || nextState.lifecycle === LC_RESTARTING || nextState.lifecycle === LC_RESTARTING_FALLING) return;
 
     let scale = this.state.scale;
-    // if (scale > 0.4 && bounced === false && this.state.y > FLOOR_HEIGHT) {
     if (scale > 0.4 && this.state.y > FLOOR_HEIGHT) {
       scale -= 0.007;
     }
@@ -134,7 +131,6 @@ class Basketball extends Component {
   }
 
   handleRestart(nextState) {
-
     if (nextState.lifecycle === LC_RESTARTING_FALLING && nextState.y <= FLOOR_Y) {
       nextState.lifecycle = LC_WAITING;
       nextState.y = FLOOR_Y;
@@ -161,7 +157,6 @@ class Basketball extends Component {
 
   update() {
     if (this.state.lifecycle === LC_WAITING) return;
-    // if (this.state.vy === 0 && this.state.y === FLOOR_Y) return;
 
     let nextState = Object.assign({}, this.state);
     this.updateVelocity(nextState);
@@ -176,7 +171,6 @@ class Basketball extends Component {
   }
 
   renderNet(render) {
-    // if (this.state.y > FLOOR_HEIGHT) {
     if (render === true) {
       return (
         <Net y={NET_Y} height={NET_HEIGHT} width={NET_WIDTH} />
@@ -185,7 +179,6 @@ class Basketball extends Component {
     return null;
   }
 
-  // if (this.state.y > FLOOR_HEIGHT) {
   renderFloor(render) {
     if (this.state.lifecycle === LC_RESTARTING || this.state.lifecycle === LC_RESTARTING_FALLING) {
       render = !render;
