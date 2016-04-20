@@ -1,6 +1,6 @@
 # react-native-basketball
 
-React-Native clone of the Facebook Basketball Game
+React-Native clone of the Facebook Basketball game
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-basketball/master/capture/capture.gif)
 

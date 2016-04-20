@@ -15,7 +15,7 @@ import Score from './components/Score';
 import Vector from './utils/Vector';
 
 // physical variables
-const gravity = 0.34; // gravity
+const gravity = 0.6; // gravity
 const radius = 48; // ball radius
 const rotationFactor = 10; // ball rotation factor
 
@@ -194,7 +194,11 @@ class Basketball extends Component {
 
   updateVelocity(nextState) {
     nextState.vx = this.state.vx;
-    nextState.vy = this.state.vy + gravity;
+    if (nextState.lifecycle === LC_STARTING && nextState.y < NET_Y - 200) {
+      nextState.vy = this.state.vy;
+    } else {
+      nextState.vy = this.state.vy + gravity;
+    }
   }
 
   updatePosition(nextState) {
@@ -225,7 +229,7 @@ class Basketball extends Component {
 
     let scale = this.state.scale;
     if (scale > 0.4 && this.state.y > FLOOR_HEIGHT) {
-      scale -= 0.006;
+      scale -= 0.01;
     }
 
     nextState.scale = scale;
