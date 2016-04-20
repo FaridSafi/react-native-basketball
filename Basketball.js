@@ -10,9 +10,10 @@ import Hoop from './components/Hoop';
 import Net from './components/Net';
 import Floor from './components/Floor';
 
+import Vector from './utils/Vector';
+
 // physical variables
 const gravity = 0.28; // gravity
-const velocityReduction = 0.6; // velocity reduction factor per bounce
 const radius = 48; // ball radius
 const rotationFactor = 10; // ball rotation factor
 
@@ -20,9 +21,14 @@ const rotationFactor = 10; // ball rotation factor
 const FLOOR_HEIGHT = 48;
 const FLOOR_Y = 11;
 const HOOP_Y = Dimensions.get('window').height - 227;
-const NET_Y = Dimensions.get('window').height - 216;
-const NET_HEIGHT = 5;
+const NET_HEIGHT = 6;
 const NET_WIDTH = 83;
+const NET_Y = Dimensions.get('window').height - 216;
+const NET_X = (Dimensions.get('window').width / 2) - (NET_WIDTH / 2);
+const NET_LEFT_BORDER_X = NET_X + NET_HEIGHT / 2;
+const NET_LEFT_BORDER_Y = NET_Y;
+const NET_RIGHT_BORDER_X = NET_X + NET_WIDTH - NET_HEIGHT / 2;
+const NET_RIGHT_BORDER_Y = NET_LEFT_BORDER_Y;
 
 // ball lifecycle
 const LC_WAITING = 0;
@@ -31,11 +37,6 @@ const LC_FALLING = 2;
 const LC_BOUNCING = 3;
 const LC_RESTARTING = 4;
 const LC_RESTARTING_FALLING = 5;
-
-// TODO
-// ALL calculation using radius should use scale
-// test android ipad
-// eslint
 
 class Basketball extends Component {
 
@@ -46,6 +47,7 @@ class Basketball extends Component {
 
     // initialize ball states
     this.state = {
+      // x: Dimensions.get('window').width / 2 - radius - 60,
       x: Dimensions.get('window').width / 2 - radius,
       y: FLOOR_Y,
       vx: 0,
@@ -80,23 +82,111 @@ class Basketball extends Component {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  circlesColliding(x1, y1, radius1, x2, y2, radius2) {
-    let dx = x2 - x1;
-    let dy = y2 - y1;
-    let radii = radius1 + radius2;
-    if ( ( dx * dx ) + ( dy * dy ) < radii * radii ) {
+  circlesColliding(circle1, circle2) {
+    const dx = circle1.x - circle2.x;
+    const dy = circle1.y - circle2.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < circle1.radius + circle2.radius) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
-  // collision
-  // let bounced = this.state.bounced;
-  // bouncing
-  // vy = vy * -velocityReduction;
-  handleCollision(nextState) {
+  // Inspired by http://www.adambrookesprojects.co.uk/project/canvas-collision-elastic-collision-tutorial/
+  updateCollisionVelocity(nextState, ball, netBorder) {
+    const xDistance = (netBorder.x - ball.x);
+    const yDistance = (netBorder.y - ball.y);
+    let normalVector = new Vector(xDistance, yDistance);
+    normalVector = normalVector.normalise();
 
+    const tangentVector = new Vector((normalVector.getY() * -1), normalVector.getX());
+
+    // create ball scalar normal direction.
+    const ballScalarNormal = normalVector.dot(ball.velocity);
+    const netScalarNormal = normalVector.dot(netBorder.velocity);
+
+    // create scalar velocity in the tagential direction.
+    const ballScalarTangential = tangentVector.dot(ball.velocity);
+
+    const ballScalarNormalAfter = (ballScalarNormal * (ball.mass - netBorder.mass) +
+     2 * netBorder.mass * netScalarNormal) / (ball.mass + netBorder.mass);
+
+    const ballScalarNormalAfterVector = normalVector.multiply(ballScalarNormalAfter);
+    const ballScalarNormalVector = (tangentVector.multiply(ballScalarTangential));
+
+    const nextVelocity = ballScalarNormalVector.add(ballScalarNormalAfterVector);
+
+    if (ball.y < NET_Y + NET_HEIGHT / 2) {
+      nextState.vx = nextVelocity.x;
+    } else {
+      nextState.vx = -nextVelocity.x;
+    }
+
+    nextState.vy = nextVelocity.y;
+
+    this.updatePosition(nextState);
+  }
+
+  handleCollision(nextState) {
+    if (nextState.lifecycle !== LC_FALLING && nextState.lifecycle !== LC_BOUNCING) return;
+
+    const _self = this;
+
+    const ball = {
+      x: nextState.x + radius,
+      y: nextState.y + radius,
+      radius: radius * nextState.scale,
+      velocity: {
+        getX() {
+          return _self.state.vx;
+        },
+        getY() {
+          return _self.state.vy;
+        },
+      },
+      mass: 2,
+    };
+    const netLeftBorder = {
+      x: NET_LEFT_BORDER_X,
+      y: NET_LEFT_BORDER_Y,
+      radius: NET_HEIGHT / 2,
+      velocity: {
+        getX() {
+          return 0;
+        },
+        getY() {
+          return 0;
+        },
+      },
+      mass: 10,
+    };
+    const netRightBorder = {
+      x: NET_RIGHT_BORDER_X,
+      y: NET_RIGHT_BORDER_Y,
+      radius: NET_HEIGHT / 2,
+      velocity: {
+        getX() {
+          return 0;
+        },
+        getY() {
+          return 0;
+        },
+      },
+      mass: 10,
+    };
+
+    const isLeftCollision = this.circlesColliding(ball, netLeftBorder);
+    if (isLeftCollision) {
+      nextState.lifecycle = LC_BOUNCING;
+      this.updateCollisionVelocity(nextState, ball, netLeftBorder);
+    } else {
+      const isRightCollision = this.circlesColliding(ball, netRightBorder);
+      if (isRightCollision) {
+        nextState.lifecycle = LC_BOUNCING;
+        this.updateCollisionVelocity(nextState, ball, netRightBorder);
+      }
+    }
   }
 
   updateVelocity(nextState) {
@@ -120,7 +210,7 @@ class Basketball extends Component {
 
     let scale = this.state.scale;
     if (scale > 0.4 && this.state.y > FLOOR_HEIGHT) {
-      scale -= 0.007;
+      scale -= 0.006;
     }
 
     nextState.scale = scale;
@@ -145,7 +235,7 @@ class Basketball extends Component {
       || ((nextState.lifecycle === LC_FALLING || nextState.lifecycle === LC_BOUNCING) && (nextState.y + (radius * nextState.scale * 2) < FLOOR_Y + radius * -2))
     ) {
       nextState.y = FLOOR_Y;
-      // nextState.y = FLOOR_Y + radius * -2;
+      // nextState.x = Dimensions.get('window').width / 2 - radius;
       nextState.x = this.randomIntFromInterval(4, Dimensions.get('window').width - (radius * 2) - 4);
       nextState.vy = -5;
       nextState.vx = 0;
@@ -173,7 +263,7 @@ class Basketball extends Component {
   renderNet(render) {
     if (render === true) {
       return (
-        <Net y={NET_Y} height={NET_HEIGHT} width={NET_WIDTH} />
+        <Net y={NET_Y} x={NET_X} height={NET_HEIGHT} width={NET_WIDTH} />
       );
     }
     return null;
