@@ -9,18 +9,18 @@ import React, {
 class Hoop extends Component {
   render() {
     return (
-      <View style={[styles.container, {
+      <View style={[styles.hoopContainer, {
         bottom: this.props.y,
       }]}
       >
-        <View style={styles.contained} />
+        <View style={styles.hoopContained} />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  hoopContainer: {
     position: 'absolute',
     left: (Dimensions.get('window').width / 2) - (179 / 2),
     width: 179,
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     borderColor: '#b7b7b7',
     borderRadius: 4,
   },
-  contained: {
+  hoopContained: {
     width: 70,
     height: 54,
     marginTop: 38,

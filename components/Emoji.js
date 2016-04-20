@@ -74,7 +74,7 @@ class Emoji extends Component {
 
   render() {
     return (
-      <View style={[styles.container, {
+      <View style={[styles.emojiContainer, {
         bottom: this.props.y,
         width: 100,
         height: 100,
@@ -97,7 +97,7 @@ class Emoji extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  emojiContainer: {
     position: 'absolute',
     justifyContent: 'flex-end',
     alignItems: 'center',

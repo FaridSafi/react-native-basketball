@@ -40,7 +40,7 @@ class Ball extends Component {
             this.yOut = null;
           }
         }}
-        style={[styles.container, {
+        style={[styles.ballContainer, {
           width: this.props.radius * 2,
           height: this.props.radius * 2,
           left: this.props.x,
@@ -64,7 +64,7 @@ class Ball extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  ballContainer: {
     position: 'absolute',
   },
 });

@@ -9,13 +9,13 @@ import React, {
 class Floor extends Component {
   render() {
     return (
-      <View style={[styles.container, {height: this.props.height}]} />
+      <View style={[styles.floorContainer, {height: this.props.height}]} />
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  floorContainer: {
     backgroundColor: '#F4F4F4',
     position: 'absolute',
     width: Dimensions.get('window').width,

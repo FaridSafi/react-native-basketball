@@ -10,7 +10,7 @@ import React, {
 class Score extends Component {
   render() {
     return (
-      <View style={[styles.container, {
+      <View style={[styles.scoreContainer, {
         bottom: this.props.y,
         width: Dimensions.get('window').width,
       }]}
@@ -30,7 +30,7 @@ class Score extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scoreContainer: {
     position: 'absolute',
     justifyContent: 'flex-end',
     alignItems: 'center',

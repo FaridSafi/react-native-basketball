@@ -8,7 +8,7 @@ import React, {
 class Net extends Component {
   render() {
     return (
-      <View style={[styles.container, {
+      <View style={[styles.netContainer, {
         left: this.props.x,
         bottom: this.props.y,
         height: this.props.height,
@@ -20,7 +20,7 @@ class Net extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  netContainer: {
     position: 'absolute',
     backgroundColor: '#ff260f',
     borderRadius: 3,
