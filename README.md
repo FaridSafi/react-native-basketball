@@ -11,7 +11,7 @@ React-Native clone of the Facebook Basketball game
 - `react-native run-ios`
 
 ### Test in on React Native Playground
-- [https://rnplay.org/apps/Lvpv0w](https://rnplay.org/apps/Lvpv0w) *retry later if you have the Bad gateway error*
+- [https://rnplay.org/apps/Lvpv0w](https://rnplay.org/apps/Lvpv0w) *retry later if you experiment the Bad gateway error*
 
 
 
