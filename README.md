@@ -14,8 +14,8 @@ React-Native clone of the Facebook Basketball game
 - [http://exp.host/@brentvatne/Basketball](http://exp.host/@brentvatne/Basketball)
 
 ### Test in on React Native Playground
-- [https://rnplay.org/apps/Lvpv0w](https://rnplay.org/apps/Lvpv0w) *retry later if you experiment the Bad gateway error*
+- [https://rnplay.org/apps/Lvpv0w](https://rnplay.org/apps/Lvpv0w) *retry later if you experience the Bad Gateway error*
 
 
 
-Feel free to ask me questions on Twitter [@FaridSafi](https://www.twitter.com/FaridSafi) !
+Feel free to ask me questions on Twitter [@FaridSafi](https://www.twitter.com/FaridSafi)!
