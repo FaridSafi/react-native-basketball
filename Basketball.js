@@ -270,7 +270,8 @@ class Basketball extends Component {
       if (nextState.scored === true) {
         nextState.x = this.randomIntFromInterval(4, Dimensions.get('window').width - (radius * 2) - 4);
       } else {
-        nextState.x = Dimensions.get('window').width / 2 - radius;
+        // nextState.x = Dimensions.get('window').width / 2 - radius;
+        nextState.x = this.randomIntFromInterval(4, Dimensions.get('window').width - (radius * 2) - 4);
         nextState.score = 0;
       }
 
