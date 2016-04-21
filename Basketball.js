@@ -275,7 +275,7 @@ class Basketball extends Component {
       }
 
       // nextState.x = Dimensions.get('window').width / 2 - radius;
-      nextState.vy = -6;
+      nextState.vy = -8;
       nextState.vx = 0;
       nextState.scale = 1;
       nextState.rotate = 0;
@@ -326,7 +326,7 @@ class Basketball extends Component {
       <View style={styles.container}>
         <Score y={FLOOR_HEIGHT * 3} score={this.state.score} scored={this.state.scored} />
         <Hoop y={HOOP_Y} />
-        {this.renderNet(this.state.vy < 0)}
+        {this.renderNet(this.state.lifecycle === LC_STARTING)}
         {this.renderFloor(this.state.vy <= 0)}
         <Ball
           onStart={this.onStart.bind(this)}
@@ -336,7 +336,7 @@ class Basketball extends Component {
           rotate={this.state.rotate}
           scale={this.state.scale}
         />
-        {this.renderNet(this.state.vy >= 0)}
+        {this.renderNet(this.state.lifecycle !== LC_STARTING)}
         {this.renderFloor(this.state.vy > 0)}
         <Emoji y={NET_Y} scored={this.state.scored} />
       </View>
