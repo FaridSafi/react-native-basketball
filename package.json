@@ -2,23 +2,12 @@
   "name": "Basketball",
   "version": "0.0.1",
   "private": true,
-  "main": "main.js",
-  "exp": {
-    "sdkVersion": "5.0.0",
-    "name": "React Native Basketball",
-    "primaryColor": "#283035",
-    "iconUrl": "https://raw.githubusercontent.com/FaridSafi/react-native-basketball/902dac849843d6beff3ee843ac527240d73da44f/assets/ball-384.png",
-    "orientation": "portrait",
-    "loading": {
-      "iconUrl": "https://raw.githubusercontent.com/FaridSafi/react-native-basketball/902dac849843d6beff3ee843ac527240d73da44f/assets/ball-384.png"
-    }
-  },
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
-    "react": "^0.14.5",
-    "react-native": "exponentjs/react-native#sdk-5.0.0"
+    "react": "^0.14.8",
+    "react-native": "^0.24.1"
   },
   "devDependencies": {
     "eslint": "^2.8.0",
