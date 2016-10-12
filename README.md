@@ -19,3 +19,7 @@ React-Native clone of the Facebook Basketball game
 
 
 Feel free to ask me questions on Twitter [@FaridSafi](https://www.twitter.com/FaridSafi)!
+
+# License
+
+Licensed under the [MIT](LICENSE)
