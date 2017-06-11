@@ -1,11 +1,15 @@
 import React, {
+  Component,
+} from 'react';
+import {
   View,
   Text,
   StyleSheet,
-  Component,
-  PropTypes,
   Dimensions,
 } from 'react-native';
+import {
+  PropTypes,
+} from 'prop-types';
 
 class Score extends Component {
   render() {

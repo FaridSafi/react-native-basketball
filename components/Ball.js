@@ -1,10 +1,14 @@
 import React, {
   Component,
+} from 'react';
+import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  PropTypes,
 } from 'react-native';
+import {
+  PropTypes,
+} from 'prop-types';
 
 class Ball extends Component {
 

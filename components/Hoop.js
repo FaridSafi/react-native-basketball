@@ -1,10 +1,14 @@
 import React, {
+  Component,
+} from 'react';
+import {
   View,
   StyleSheet,
   Dimensions,
-  PropTypes,
-  Component,
 } from 'react-native';
+import {
+  PropTypes,
+} from 'prop-types';
 
 class Hoop extends Component {
   render() {
