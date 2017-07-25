@@ -16,3 +16,7 @@ For React Native 0.45.1
 
 
 Feel free to ask me questions on Twitter [@FaridSafi](https://www.twitter.com/FaridSafi)!
+
+# License
+
+Licensed under the [MIT](LICENSE)
