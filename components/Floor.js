@@ -1,10 +1,14 @@
 import React, {
+  Component,
+} from 'react';
+import {
   View,
   StyleSheet,
   Dimensions,
-  Component,
-  PropTypes,
 } from 'react-native';
+import {
+  PropTypes,
+} from 'prop-types';
 
 class Floor extends Component {
   render() {

@@ -1,9 +1,13 @@
 import React, {
+  Component,
+} from 'react';
+import {
   View,
   StyleSheet,
-  Component,
-  PropTypes,
 } from 'react-native';
+import {
+  PropTypes,
+} from 'prop-types';
 
 class Net extends Component {
   render() {
