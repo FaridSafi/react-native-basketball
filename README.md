@@ -1,5 +1,11 @@
 # react-native-basketball
 
+
+npx create-expo-app AwesomeProject
+
+cd AwesomeProject
+npx expo start
+
 React-Native clone of the Facebook Basketball game
 
 ![](https://raw.githubusercontent.com/FaridSafi/react-native-basketball/master/capture/capture.gif)
